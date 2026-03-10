@@ -52,12 +52,12 @@ class TestTwistMux(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._publishers = RatePublishers()
-        cls._vel1 = cls._publishers.add_topic('vel_1', Twist)
-        cls._vel2 = cls._publishers.add_topic('vel_2', Twist)
-        cls._vel3 = cls._publishers.add_topic('vel_3', Twist)
+        cls._vel1 = cls._publishers.add_topic("vel_1", Twist)
+        cls._vel2 = cls._publishers.add_topic("vel_2", Twist)
+        cls._vel3 = cls._publishers.add_topic("vel_3", Twist)
 
-        cls._lock1 = cls._publishers.add_topic('lock_1', Bool)
-        cls._lock2 = cls._publishers.add_topic('lock_2', Bool)
+        cls._lock1 = cls._publishers.add_topic("lock_1", Bool)
+        cls._lock2 = cls._publishers.add_topic("lock_2", Bool)
 
         cls._timeout_manager = TimeoutManager()
         cls._timeout_manager.add(cls._publishers)
@@ -90,13 +90,12 @@ class TestTwistMux(unittest.TestCase):
         time.sleep(cls.MESSAGE_TIMEOUT)
         # TODO wait_for_msg-like functionnality not yet available
         # https://github.com/ros2/rclcpp/issues/520
-        return rospy.wait_for_message('cmd_vel_out', Twist,
-                                      timeout=cls.MESSAGE_TIMEOUT)
+        return rospy.wait_for_message("cmd_vel_out", Twist, timeout=cls.MESSAGE_TIMEOUT)
 
     def test_empty(self):
         try:
             self._vel_cmd()
-            self.fail('twist_mux should not be publishing without any input')
+            self.fail("twist_mux should not be publishing without any input")
         except rospy.ROSException:
             pass
 
@@ -124,12 +123,14 @@ class TestTwistMux(unittest.TestCase):
         rospy.sleep(0.5)  # input is 0.3 in .yaml file
         self.assertEqual(t1, self._vel_cmd())
 
+
 # TODO: test limits, test timeouts, etc.
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import rostest
-    PKG_NAME = 'twist_mux'
-    TEST_NAME = '%s_system_blackbox_test' % PKG_NAME
+
+    PKG_NAME = "twist_mux"
+    TEST_NAME = "%s_system_blackbox_test" % PKG_NAME
     rospy.init_node(TEST_NAME)
     rostest.rosrun(PKG_NAME, TEST_NAME, TestTwistMux)

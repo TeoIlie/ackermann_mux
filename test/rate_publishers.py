@@ -33,20 +33,22 @@ class _RatePublisher(Node):
     _tolerance = 0.01
 
     def __init__(self, topic, msg_type, context, latch=False):
-        super().__init__('rate_publisher_'+topic, context=context)
+        super().__init__("rate_publisher_" + topic, context=context)
         self._topic = topic
         latching_qos = QoSProfile(
             depth=1,
-            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL)
+            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+        )
         self._publisher = self.create_publisher(
-            msg_type, topic, qos_profile=latching_qos)
+            msg_type, topic, qos_profile=latching_qos
+        )
         self._message = None
         self._period = None  # 1 / freq
         self._last_pub = 0
 
     def pub(self, message, rate=None):
         self._message = message
-        self._period = (1. / rate) if rate else None
+        self._period = (1.0 / rate) if rate else None
         self.publish_once()
 
     def stop(self):
@@ -95,8 +97,7 @@ class RatePublishers(object):
         connect.
         """
         assert topic not in self._publishers
-        rate_publisher = _RatePublisher(
-            topic, msg_type, self._context, latch=True)
+        rate_publisher = _RatePublisher(topic, msg_type, self._context, latch=True)
         self._publishers[topic] = rate_publisher
         return rate_publisher
 
